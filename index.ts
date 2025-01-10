@@ -1,31 +1,36 @@
-import { ACCESS_TOKEN, API, BOT_ID, TEST_RECIPIENT } from './lib/constants';
+import Elysia from 'elysia';
+import util from 'util';
+import { readMessage, sendMessageText } from './lib/api';
+import { WEBHOOK_VERIFY_TOKEN } from './lib/constants';
+import type { WebhookBody } from './lib/types';
 
-const sendMessageText = async (message: string) => {
-   try {
-      const response = await fetch(`${API}/${BOT_ID}/messages`, {
-         method: 'POST',
-         headers: {
-            'Content-Type': 'application/json',
-            Authorization: `Bearer ${ACCESS_TOKEN}`,
-         },
-         body: JSON.stringify({
-            messaging_product: 'whatsapp',
-            to: TEST_RECIPIENT,
-            type: 'text',
-            text: {
-               body: message,
-            },
-         }),
-      });
+const app = new Elysia()
+   .get('/', () => '¡Hola desde el servidor de Convivito!')
+   .get('/webhook', ({ query }) => {
+      const mode = query['hub.mode'];
+      const token = query['hub.verify_token'];
+      const challenge = query['hub.challenge'];
 
-      if (response.ok) {
-         console.log('¡Mensaje enviado satisfactoriamente!');
+      if (mode === 'subscribe' && token === WEBHOOK_VERIFY_TOKEN) {
+         console.log('¡El webhook se ha verficado correctamente!');
+         return new Response(challenge, { status: 200 });
       } else {
-         console.error(`Error enviando el mensaje: ${response.statusText}`);
+         return new Response('Token de verificación incorrecto', { status: 403 });
       }
-   } catch (error) {
-      throw new Error(`Error enviando el mensaje: ${error}`);
-   }
-};
+   })
+   .post('/webhook', async ({ body }: { body: WebhookBody }) => {
+      console.log('¡Petición POST recibida!');
+      console.log(util.inspect(body, false, null, true));
 
-sendMessageText('¡Hola desde Convivito!');
+      const message = body.entry[0].changes[0].value.messages[0];
+      const phoneNumber = message.from;
+      const messageBody = message.text.body;
+
+      await sendMessageText(phoneNumber, `Respondiendo al mensaje: ${messageBody}`);
+      await readMessage(message.id);
+
+      return new Response('¡Petición POST recibida!', { status: 200 });
+   })
+   .listen(3000);
+
+console.log(`El servidor de Convivito está ejecutándose en ${app.server?.hostname}:${app.server?.port}`);
