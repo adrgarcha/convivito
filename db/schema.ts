@@ -3,7 +3,7 @@ import { integer, sqliteTable, text } from 'drizzle-orm/sqlite-core';
 
 export const homes = sqliteTable('homes', {
    id: integer().primaryKey({ autoIncrement: true }),
-   address: text(),
+   address: text().unique(),
    rent: integer(),
    reminderId: integer('reminder_id'),
 });
