@@ -23,7 +23,7 @@ export const residents = sqliteTable('residents', {
    homeId: integer('home_id'),
 });
 
-export const residentsRelations = relations(residents, ({ one, many }) => ({
+export const residentsRelations = relations(residents, ({ one }) => ({
    home: one(homes, {
       fields: [residents.homeId],
       references: [homes.id],
@@ -37,7 +37,7 @@ export const reminders = sqliteTable('reminders', {
    homeId: integer('home_id'),
 });
 
-export const remindersRelations = relations(reminders, ({ one, many }) => ({
+export const remindersRelations = relations(reminders, ({ one }) => ({
    home: one(homes, {
       fields: [reminders.homeId],
       references: [homes.id],
