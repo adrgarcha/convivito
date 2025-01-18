@@ -43,3 +43,12 @@ export const remindersRelations = relations(reminders, ({ one }) => ({
       references: [homes.id],
    }),
 }));
+
+export type SelectHome = typeof homes.$inferSelect;
+export type InsertHome = typeof homes.$inferInsert;
+
+export type SelectResident = typeof residents.$inferSelect;
+export type InsertResident = typeof residents.$inferInsert;
+
+export type SelectReminder = typeof reminders.$inferSelect;
+export type InsertReminder = typeof reminders.$inferInsert;
