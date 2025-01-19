@@ -17,6 +17,7 @@
   "dependencies": {
     "@libsql/client": "^0.14.0",
     "drizzle-orm": "^0.38.3",
-    "elysia": "^1.2.10"
+    "elysia": "^1.2.10",
+    "redis": "^4.7.0"
   }
 }
