@@ -1,8 +1,15 @@
 import Elysia from 'elysia';
-import util from 'util';
-import { readMessage, sendMessageText } from './lib/api';
+import { inspect } from 'util';
+import { readMessage } from './lib/api';
 import { WEBHOOK_VERIFY_TOKEN } from './lib/constants';
+import { handleMessage } from './lib/handler';
+import { connectRedis } from './lib/redis';
 import type { WebhookBody } from './lib/types';
+
+(async () => {
+   await connectRedis();
+   console.log('¡Conexión a Redis establecida!');
+})();
 
 const app = new Elysia()
    .get('/', () => '¡Hola desde el servidor de Convivito!')
@@ -20,13 +27,13 @@ const app = new Elysia()
    })
    .post('/webhook', async ({ body }: { body: WebhookBody }) => {
       console.log('¡Petición POST recibida!');
-      console.log(util.inspect(body, false, null, true));
+      console.log(inspect(body, false, null, true));
 
       const message = body.entry[0].changes[0].value.messages[0];
       const phoneNumber = message.from;
       const messageBody = message.text.body;
 
-      await sendMessageText(phoneNumber, `Respondiendo al mensaje: ${messageBody}`);
+      await handleMessage(phoneNumber, messageBody);
       await readMessage(message.id);
 
       return new Response('¡Petición POST recibida!', { status: 200 });

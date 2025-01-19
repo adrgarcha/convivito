@@ -1,3 +1,5 @@
+import type { InsertHome, InsertResident } from '../db/schema';
+
 export type WebhookBody = {
    object: 'whatsapp_business_account';
    entry: WebhookEntry[];
@@ -37,3 +39,20 @@ type Message = {
    };
    type: 'text';
 };
+
+export type ConversationType = 'REGISTER_HOME' | 'NONE';
+
+export type RegisterHomeConversationData = {
+   home: Partial<InsertHome>;
+   residents: Partial<InsertResident>[];
+   residentsNumber: number;
+};
+
+export interface ConversationState {
+   type: ConversationType;
+   step: number;
+   data: {
+      REGISTER_HOME: RegisterHomeConversationData;
+      NONE: Record<string, never>;
+   }[ConversationType];
+}
