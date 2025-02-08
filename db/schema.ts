@@ -19,7 +19,7 @@ export const homesRelations = relations(homes, ({ one, many }) => ({
 export const residents = sqliteTable('residents', {
    id: integer().primaryKey({ autoIncrement: true }),
    name: text(),
-   phoneNumber: text('phone_number'),
+   phoneNumber: text('phone_number').unique(),
    homeId: integer('home_id'),
 });
 
@@ -32,8 +32,10 @@ export const residentsRelations = relations(residents, ({ one }) => ({
 
 export const reminders = sqliteTable('reminders', {
    id: integer().primaryKey({ autoIncrement: true }),
-   rentDate: integer('rent_date', { mode: 'timestamp' }),
-   cleaningDate: integer('cleaning_date', { mode: 'timestamp' }),
+   rentStartDay: integer('rent_start_day'),
+   rentEndDay: integer('rent_end_day'),
+   cleaningStartDay: integer('cleaning_start_day'),
+   cleaningEndDay: integer('cleaning_end_day'),
    homeId: integer('home_id'),
 });
 
