@@ -2,6 +2,7 @@ import Elysia from 'elysia';
 import { inspect } from 'util';
 import { readMessage } from './lib/api';
 import { WEBHOOK_VERIFY_TOKEN } from './lib/constants';
+import { initializeCrons } from './lib/cron';
 import { handleMessage } from './lib/handler';
 import { connectRedis } from './lib/redis';
 import type { WebhookBody } from './lib/types';
@@ -9,6 +10,9 @@ import type { WebhookBody } from './lib/types';
 (async () => {
    await connectRedis();
    console.log('¡Conexión a Redis establecida!');
+
+   await initializeCrons();
+   console.log('¡Cron jobs inicializados!');
 })();
 
 const app = new Elysia()
