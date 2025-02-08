@@ -1,12 +1,11 @@
 import { eq } from 'drizzle-orm';
 import { db } from '../db/db';
-import { reminders, residents } from '../db/schema';
+import { homes, reminders, residents } from '../db/schema';
 import { sendMessageText } from '../lib/api';
+import { DAYS } from '../lib/constants';
 import { endConversation, getConversation, nextStep, startConversation, updateConversationData } from '../lib/conversation-manager';
 import type { SetupReminderConversationData } from '../lib/types';
 import { capitalizeFirst } from '../lib/utils';
-
-const DAYS = ['lunes', 'martes', 'miércoles', 'jueves', 'viernes', 'sábado', 'domingo'];
 
 export async function setupReminder(phoneNumber: string) {
    const resdient = await db.selectDistinct().from(residents).where(eq(residents.phoneNumber, phoneNumber));
@@ -78,14 +77,25 @@ export async function handleReminderSetup(phoneNumber: string, message: string) 
          }
 
          const resident = await db.selectDistinct().from(residents).where(eq(residents.phoneNumber, phoneNumber));
+         const residentHomeId = resident[0].homeId;
 
-         await db.insert(reminders).values({
-            rentStartDay: data.rentStartDay,
-            rentEndDay: data.rentEndDay,
-            cleaningStartDay: data.cleaningStartDay,
-            cleaningEndDay: cleaningEndDay,
-            homeId: resident[0].homeId,
-         });
+         if (!residentHomeId) {
+            await endConversation(phoneNumber);
+            return await sendMessageText(phoneNumber, 'Primero necesitas registrar una vivienda. Escribe "registrar vivienda" para comenzar.');
+         }
+
+         const [{ id: reminderId }] = await db
+            .insert(reminders)
+            .values({
+               rentStartDay: data.rentStartDay,
+               rentEndDay: data.rentEndDay,
+               cleaningStartDay: data.cleaningStartDay,
+               cleaningEndDay: cleaningEndDay,
+               homeId: residentHomeId,
+            })
+            .returning({ id: reminders.id });
+
+         await db.update(homes).set({ reminderId }).where(eq(homes.id, residentHomeId));
 
          const finalMessage =
             '¡Recordatorios configurados!\n' +
