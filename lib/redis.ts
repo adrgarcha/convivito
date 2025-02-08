@@ -1,12 +1,12 @@
 import { createClient } from 'redis';
-import { REDIS_HOST, REDIS_PASSWORD } from './constants';
+import { REDIS_HOST, REDIS_PASSWORD, REDIS_PORT } from './constants';
 
 export const client = createClient({
    username: 'default',
    password: REDIS_PASSWORD,
    socket: {
       host: REDIS_HOST,
-      port: 11177,
+      port: Number(REDIS_PORT),
    },
 });
 
