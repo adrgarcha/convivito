@@ -47,6 +47,10 @@ export async function handleReminderSetup(phoneNumber: string, message: string) 
             return await sendMessageText(phoneNumber, 'Por favor, introduce un número válido entre 1 y 31.');
          }
 
+         if (rentStartDay >= 28) {
+            await sendMessageText(phoneNumber, 'Nota: En meses con menos días, el recordatorio se enviará el último día del mes.');
+         }
+
          await updateConversationData(phoneNumber, { rentStartDay });
          await nextStep(phoneNumber);
          return await sendMessageText(phoneNumber, '¿Hasta qué día del mes tienes para pagar el alquiler?');
@@ -55,6 +59,10 @@ export async function handleReminderSetup(phoneNumber: string, message: string) 
          const rentEndDay = parseInt(message);
          if (isNaN(rentEndDay) || rentEndDay < 1 || rentEndDay > 31 || rentEndDay < data.rentStartDay) {
             return await sendMessageText(phoneNumber, `Por favor, introduce un número válido entre ${data.rentStartDay} y 31.`);
+         }
+
+         if (rentEndDay >= 28) {
+            await sendMessageText(phoneNumber, 'Nota: En meses con menos días, la fecha límite será el último día del mes.');
          }
 
          await updateConversationData(phoneNumber, { ...data, rentEndDay });
