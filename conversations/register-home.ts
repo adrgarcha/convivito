@@ -1,10 +1,17 @@
+import { eq } from 'drizzle-orm';
 import { db } from '../db/db';
-import { homes, residents as residentsTable } from '../db/schema';
+import { homes, residents, residents as residentsTable } from '../db/schema';
 import { sendMessageText } from '../lib/api';
 import { endConversation, getConversation, nextStep, previousStep, startConversation, updateConversationData } from '../lib/conversation-manager';
 import type { RegisterHomeConversationData } from '../lib/types';
 
 export async function registerHome(phoneNumber: string) {
+   const [resdient] = await db.selectDistinct().from(residents).where(eq(residents.phoneNumber, phoneNumber));
+
+   if (resdient && resdient.homeId) {
+      return await sendMessageText(phoneNumber, 'Ya tienes una vivienda registrada.');
+   }
+
    await startConversation(phoneNumber, 'REGISTER_HOME');
    await updateConversationData(phoneNumber, {
       home: {},
