@@ -8,10 +8,16 @@ import type { SetupReminderConversationData } from '../lib/types';
 import { capitalizeFirst } from '../lib/utils';
 
 export async function setupReminder(phoneNumber: string) {
-   const resdient = await db.selectDistinct().from(residents).where(eq(residents.phoneNumber, phoneNumber));
+   const [resdient] = await db.selectDistinct().from(residents).where(eq(residents.phoneNumber, phoneNumber));
 
-   if (!resdient || !resdient[0].homeId) {
+   if (!resdient || !resdient.homeId) {
       return await sendMessageText(phoneNumber, 'Primero necesitas registrar una vivienda. Escribe "registrar vivienda" para comenzar.');
+   }
+
+   const [residentHome] = await db.selectDistinct().from(homes).where(eq(homes.id, resdient.homeId));
+
+   if (residentHome.reminderId) {
+      return await sendMessageText(phoneNumber, 'Ya tienes los recordatorios configurados.');
    }
 
    await startConversation(phoneNumber, 'SETUP_REMINDER');
