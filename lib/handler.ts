@@ -1,3 +1,4 @@
+import { checkCleaning } from '../commands/check-cleaning';
 import { handleHomeRegistration, registerHome } from '../conversations/register-home';
 import { handleCleaningSetup, setupCleaning } from '../conversations/setup-cleaning';
 import { handleReminderSetup, setupReminder } from '../conversations/setup-reminder';
@@ -10,6 +11,7 @@ const AVAILABLE_COMMANDS = {
    'registrar vivienda': '🏠 Inicia el proceso de registro de una vivienda.',
    'establecer recordatorios': '⏰ Configura los recordatorios.',
    'configurar limpieza': '🧹 Configura las áreas de limpieza.',
+   'ver limpieza': '🧹 Muestra la rotación de limpieza de esta semana.',
    ayuda: '❓ Muestra este mensaje de ayuda.',
 } as const;
 
@@ -48,6 +50,8 @@ export async function handleMessage(phoneNumber: string, messageText: string) {
          return await setupReminder(phoneNumber);
       case 'configurar limpieza':
          return await setupCleaning(phoneNumber);
+      case 'ver limpieza':
+         return await checkCleaning(phoneNumber);
       case 'ayuda':
          return await sendMessageText(phoneNumber, generateHelpMessage());
       default:
