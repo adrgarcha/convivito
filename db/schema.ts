@@ -46,6 +46,37 @@ export const remindersRelations = relations(reminders, ({ one }) => ({
    }),
 }));
 
+export const cleaningAreas = sqliteTable('cleaning_areas', {
+   id: integer().primaryKey({ autoIncrement: true }),
+   name: text(),
+   homeId: integer('home_id'),
+});
+
+export const cleaningAreasRelations = relations(cleaningAreas, ({ one }) => ({
+   home: one(homes, {
+      fields: [cleaningAreas.homeId],
+      references: [homes.id],
+   }),
+}));
+
+export const cleaningAssignments = sqliteTable('cleaning_assignments', {
+   id: integer().primaryKey({ autoIncrement: true }),
+   residentId: integer('resident_id'),
+   areaId: integer('area_id'),
+   weekNumber: integer('week_number'),
+});
+
+export const cleaningAssignmentsRelations = relations(cleaningAssignments, ({ one }) => ({
+   resident: one(residents, {
+      fields: [cleaningAssignments.residentId],
+      references: [residents.id],
+   }),
+   area: one(cleaningAreas, {
+      fields: [cleaningAssignments.areaId],
+      references: [cleaningAreas.id],
+   }),
+}));
+
 export type SelectHome = typeof homes.$inferSelect;
 export type InsertHome = typeof homes.$inferInsert;
 
@@ -54,3 +85,9 @@ export type InsertResident = typeof residents.$inferInsert;
 
 export type SelectReminder = typeof reminders.$inferSelect;
 export type InsertReminder = typeof reminders.$inferInsert;
+
+export type SelectCleaningArea = typeof cleaningAreas.$inferSelect;
+export type InsertCleaningArea = typeof cleaningAreas.$inferInsert;
+
+export type SelectCleaningAssignment = typeof cleaningAssignments.$inferSelect;
+export type InsertCleaningAssignment = typeof cleaningAssignments.$inferInsert;

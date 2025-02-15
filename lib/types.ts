@@ -40,7 +40,7 @@ type Message = {
    type: 'text';
 };
 
-export type ConversationType = 'REGISTER_HOME' | 'SETUP_REMINDER' | 'NONE';
+export type ConversationType = 'REGISTER_HOME' | 'SETUP_REMINDER' | 'SETUP_CLEANING' | 'NONE';
 
 export type RegisterHomeConversationData = {
    home: Partial<InsertHome>;
@@ -55,12 +55,17 @@ export type SetupReminderConversationData = {
    cleaningEndDay: number;
 };
 
+export type SetupCleaningConversationData = {
+   homeId: number;
+};
+
 export interface ConversationState {
    type: ConversationType;
    step: number;
    data: {
       REGISTER_HOME: RegisterHomeConversationData;
       SETUP_REMINDER: SetupReminderConversationData;
+      SETUP_CLEANING: SetupCleaningConversationData;
       NONE: Record<string, never>;
    }[ConversationType];
 }

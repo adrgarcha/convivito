@@ -1,4 +1,5 @@
 import { handleHomeRegistration, registerHome } from '../conversations/register-home';
+import { handleCleaningSetup, setupCleaning } from '../conversations/setup-cleaning';
 import { handleReminderSetup, setupReminder } from '../conversations/setup-reminder';
 import { sendMessageText } from './api';
 import { getConversation } from './conversation-manager';
@@ -13,6 +14,8 @@ export async function handleMessage(phoneNumber: string, messageText: string) {
             return await handleHomeRegistration(phoneNumber, messageText);
          case 'SETUP_REMINDER':
             return await handleReminderSetup(phoneNumber, messageText);
+         case 'SETUP_CLEANING':
+            return await handleCleaningSetup(phoneNumber, messageText);
          default:
             return await sendMessageText(phoneNumber, 'Error en la conversación');
       }
@@ -23,10 +26,12 @@ export async function handleMessage(phoneNumber: string, messageText: string) {
          return await sendMessageText(phoneNumber, '¡Hola! ¿En qué puedo ayudarte?');
       case 'registrar vivienda':
          return await registerHome(phoneNumber);
-      case 'configurar recordatorios':
+      case 'establecer recordatorios':
          return await setupReminder(phoneNumber);
+      case 'configurar limpieza':
+         return await setupCleaning(phoneNumber);
       case 'ayuda':
-         return await sendMessageText(phoneNumber, 'Las opciones disponibles son:\n- Hola\n- Registrar vivienda\n- Configurar recordatorios');
+         return await sendMessageText(phoneNumber, 'Las opciones disponibles son:\n- Hola\n- Registrar vivienda\n- Establecer recordatorios');
       default:
          return await sendMessageText(phoneNumber, 'Lo siento, no entiendo ese mensaje. Escribe "ayuda" para ver las opciones disponibles.');
    }
