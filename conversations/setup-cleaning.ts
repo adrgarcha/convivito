@@ -1,6 +1,6 @@
 import { eq } from 'drizzle-orm';
 import { db } from '../db/db';
-import { cleaningAreas, cleaningAssignments, residents } from '../db/schema';
+import { cleaningAreas, residents } from '../db/schema';
 import { sendMessageText } from '../lib/api';
 import { endConversation, getConversation, startConversation, updateConversationData } from '../lib/conversation-manager';
 import type { SetupCleaningConversationData } from '../lib/types';
@@ -13,12 +13,7 @@ export async function setupCleaning(phoneNumber: string) {
       return await sendMessageText(phoneNumber, 'Primero debes registrar una vivienda.');
    }
 
-   const existingAssignment = await db
-      .select()
-      .from(cleaningAssignments)
-      .innerJoin(cleaningAreas, eq(cleaningAreas.id, cleaningAssignments.areaId))
-      .where(eq(cleaningAssignments.residentId, resident.id))
-      .limit(1);
+   const existingAssignment = await db.select().from(cleaningAreas).where(eq(cleaningAreas.residentId, resident.id)).limit(1);
 
    if (existingAssignment.length > 0) {
       return await sendMessageText(phoneNumber, 'Ya tienes asignaciones de limpieza configuradas.');
@@ -70,18 +65,10 @@ export async function handleCleaningSetup(phoneNumber: string, message: string) 
 
    try {
       for (const assignment of assignments) {
-         const [area] = await db
-            .insert(cleaningAreas)
-            .values({
-               name: assignment.areaName,
-               homeId: data.homeId,
-            })
-            .returning({ id: cleaningAreas.id });
-
-         await db.insert(cleaningAssignments).values({
+         await db.insert(cleaningAreas).values({
+            name: assignment.areaName,
             residentId: assignment.residentId,
-            areaId: area.id,
-            weekNumber: 0,
+            homeId: data.homeId,
          });
       }
 
