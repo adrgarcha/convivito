@@ -3,6 +3,24 @@ import { handleCleaningSetup, setupCleaning } from '../conversations/setup-clean
 import { handleReminderSetup, setupReminder } from '../conversations/setup-reminder';
 import { sendMessageText } from './api';
 import { getConversation } from './conversation-manager';
+import { capitalizeFirst } from './utils';
+
+const AVAILABLE_COMMANDS = {
+   hola: '👋 Saluda al bot.',
+   'registrar vivienda': '🏠 Inicia el proceso de registro de una vivienda.',
+   'establecer recordatorios': '⏰ Configura los recordatorios.',
+   'configurar limpieza': '🧹 Configura las áreas de limpieza.',
+   ayuda: '❓ Muestra este mensaje de ayuda.',
+} as const;
+
+function generateHelpMessage(): string {
+   return (
+      'Las opciones disponibles son:\n' +
+      Object.entries(AVAILABLE_COMMANDS)
+         .map(([command, description]) => `- ${capitalizeFirst(command)} - ${description}`)
+         .join('\n')
+   );
+}
 
 export async function handleMessage(phoneNumber: string, messageText: string) {
    const lowerText = messageText.toLowerCase();
@@ -31,7 +49,7 @@ export async function handleMessage(phoneNumber: string, messageText: string) {
       case 'configurar limpieza':
          return await setupCleaning(phoneNumber);
       case 'ayuda':
-         return await sendMessageText(phoneNumber, 'Las opciones disponibles son:\n- Hola\n- Registrar vivienda\n- Establecer recordatorios');
+         return await sendMessageText(phoneNumber, generateHelpMessage());
       default:
          return await sendMessageText(phoneNumber, 'Lo siento, no entiendo ese mensaje. Escribe "ayuda" para ver las opciones disponibles.');
    }
