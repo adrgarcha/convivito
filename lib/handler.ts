@@ -1,6 +1,7 @@
 import { addShoppingItem } from '../commands/add-shopping-item';
 import { checkCleaning } from '../commands/check-cleaning';
 import { listShoppingItems } from '../commands/list-shopping-items';
+import { removeShoppingItem } from '../commands/remove-shopping-item';
 import { calculateBills, handleBillCalculation } from '../conversations/calculate-bills';
 import { handleHomeRegistration, registerHome } from '../conversations/register-home';
 import { handleCleaningSetup, setupCleaning } from '../conversations/setup-cleaning';
@@ -17,6 +18,7 @@ const AVAILABLE_COMMANDS = {
    'ver limpieza': '🧹 Muestra la rotación de limpieza de esta semana.',
    'calcular facturas': '💰 Calcula y divide las facturas del mes.',
    añadir: '🛒 Añade un artículo a la lista de la compra (ej: "Añadir papel higiénico")',
+   quitar: '🗑️ Quita un artículo de la lista de la compra (ej: "Quitar papel higiénico")',
    'ver lista de la compra': '🛒 Muestra la lista de la compra actual.',
    ayuda: '❓ Muestra este mensaje de ayuda.',
 } as const;
@@ -55,6 +57,14 @@ export async function handleMessage(phoneNumber: string, messageText: string) {
          return await sendMessageText(phoneNumber, 'Debes especificar qué artículo quieres añadir.');
       }
       return await addShoppingItem(phoneNumber, item);
+   }
+
+   if (lowerText.startsWith('quitar ')) {
+      const item = messageText.slice(7).trim();
+      if (!item) {
+         return await sendMessageText(phoneNumber, 'Debes especificar qué artículo quieres quitar.');
+      }
+      return await removeShoppingItem(phoneNumber, item);
    }
 
    switch (lowerText) {
