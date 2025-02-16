@@ -40,7 +40,7 @@ type Message = {
    type: 'text';
 };
 
-export type ConversationType = 'REGISTER_HOME' | 'SETUP_REMINDER' | 'SETUP_CLEANING' | 'NONE';
+export type ConversationType = 'REGISTER_HOME' | 'SETUP_REMINDER' | 'SETUP_CLEANING' | 'CALCULATE_BILLS' | 'NONE';
 
 export type RegisterHomeConversationData = {
    home: Partial<InsertHome>;
@@ -59,6 +59,13 @@ export type SetupCleaningConversationData = {
    homeId: number;
 };
 
+export type CalculateBillsConversationData = {
+   homeId: number;
+   lightBill: number;
+   waterBill: number;
+   extraBills: Array<{ name: string; amount: number }>;
+};
+
 export interface ConversationState {
    type: ConversationType;
    step: number;
@@ -66,6 +73,7 @@ export interface ConversationState {
       REGISTER_HOME: RegisterHomeConversationData;
       SETUP_REMINDER: SetupReminderConversationData;
       SETUP_CLEANING: SetupCleaningConversationData;
+      CALCULATE_BILLS: CalculateBillsConversationData;
       NONE: Record<string, never>;
    }[ConversationType];
 }

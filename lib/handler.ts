@@ -1,4 +1,5 @@
 import { checkCleaning } from '../commands/check-cleaning';
+import { calculateBills, handleBillCalculation } from '../conversations/calculate-bills';
 import { handleHomeRegistration, registerHome } from '../conversations/register-home';
 import { handleCleaningSetup, setupCleaning } from '../conversations/setup-cleaning';
 import { handleReminderSetup, setupReminder } from '../conversations/setup-reminder';
@@ -12,6 +13,7 @@ const AVAILABLE_COMMANDS = {
    'establecer recordatorios': '⏰ Configura los recordatorios.',
    'configurar limpieza': '🧹 Configura las áreas de limpieza.',
    'ver limpieza': '🧹 Muestra la rotación de limpieza de esta semana.',
+   'calcular facturas': '💰 Calcula y divide las facturas del mes.',
    ayuda: '❓ Muestra este mensaje de ayuda.',
 } as const;
 
@@ -36,6 +38,8 @@ export async function handleMessage(phoneNumber: string, messageText: string) {
             return await handleReminderSetup(phoneNumber, messageText);
          case 'SETUP_CLEANING':
             return await handleCleaningSetup(phoneNumber, messageText);
+         case 'CALCULATE_BILLS':
+            return await handleBillCalculation(phoneNumber, messageText);
          default:
             return await sendMessageText(phoneNumber, 'Error en la conversación');
       }
@@ -52,6 +56,8 @@ export async function handleMessage(phoneNumber: string, messageText: string) {
          return await setupCleaning(phoneNumber);
       case 'ver limpieza':
          return await checkCleaning(phoneNumber);
+      case 'calcular facturas':
+         return await calculateBills(phoneNumber);
       case 'ayuda':
          return await sendMessageText(phoneNumber, generateHelpMessage());
       default:
