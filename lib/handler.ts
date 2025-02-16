@@ -10,7 +10,7 @@ import { getConversation } from './conversation-manager';
 import { capitalizeFirst } from './utils';
 
 const AVAILABLE_COMMANDS = {
-   hola: '👋 Saluda al bot.',
+   hola: '👋 Saluda a Convivito.',
    'registrar vivienda': '🏠 Inicia el proceso de registro de una vivienda.',
    'establecer recordatorios': '⏰ Configura los recordatorios.',
    'configurar limpieza': '🧹 Configura las áreas de limpieza.',
@@ -59,7 +59,7 @@ export async function handleMessage(phoneNumber: string, messageText: string) {
 
    switch (lowerText) {
       case 'hola':
-         return await sendMessageText(phoneNumber, '¡Hola! ¿En qué puedo ayudarte?');
+         return await sendMessageText(phoneNumber, '¡Hola 👋! Para ver las opciones disponibles, escribe "ayuda".');
       case 'registrar vivienda':
          return await registerHome(phoneNumber);
       case 'establecer recordatorios':
