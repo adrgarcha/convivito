@@ -1,5 +1,6 @@
 import { addShoppingItem } from '../commands/add-shopping-item';
 import { checkCleaning } from '../commands/check-cleaning';
+import { listShoppingItems } from '../commands/list-shopping-items';
 import { calculateBills, handleBillCalculation } from '../conversations/calculate-bills';
 import { handleHomeRegistration, registerHome } from '../conversations/register-home';
 import { handleCleaningSetup, setupCleaning } from '../conversations/setup-cleaning';
@@ -16,6 +17,7 @@ const AVAILABLE_COMMANDS = {
    'ver limpieza': '🧹 Muestra la rotación de limpieza de esta semana.',
    'calcular facturas': '💰 Calcula y divide las facturas del mes.',
    añadir: '🛒 Añade un artículo a la lista de la compra (ej: "Añadir papel higiénico")',
+   'ver lista de la compra': '🛒 Muestra la lista de la compra actual.',
    ayuda: '❓ Muestra este mensaje de ayuda.',
 } as const;
 
@@ -68,6 +70,8 @@ export async function handleMessage(phoneNumber: string, messageText: string) {
          return await checkCleaning(phoneNumber);
       case 'calcular facturas':
          return await calculateBills(phoneNumber);
+      case 'ver lista de la compra':
+         return await listShoppingItems(phoneNumber);
       case 'ayuda':
          return await sendMessageText(phoneNumber, generateHelpMessage());
       default:
