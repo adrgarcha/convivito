@@ -1,3 +1,4 @@
+import { addShoppingItem } from '../commands/add-shopping-item';
 import { checkCleaning } from '../commands/check-cleaning';
 import { calculateBills, handleBillCalculation } from '../conversations/calculate-bills';
 import { handleHomeRegistration, registerHome } from '../conversations/register-home';
@@ -14,6 +15,7 @@ const AVAILABLE_COMMANDS = {
    'configurar limpieza': '🧹 Configura las áreas de limpieza.',
    'ver limpieza': '🧹 Muestra la rotación de limpieza de esta semana.',
    'calcular facturas': '💰 Calcula y divide las facturas del mes.',
+   añadir: '🛒 Añade un artículo a la lista de la compra (ej: "Añadir papel higiénico")',
    ayuda: '❓ Muestra este mensaje de ayuda.',
 } as const;
 
@@ -43,6 +45,14 @@ export async function handleMessage(phoneNumber: string, messageText: string) {
          default:
             return await sendMessageText(phoneNumber, 'Error en la conversación');
       }
+   }
+
+   if (lowerText.startsWith('añadir ')) {
+      const item = messageText.slice(7).trim();
+      if (!item) {
+         return await sendMessageText(phoneNumber, 'Debes especificar qué artículo quieres añadir.');
+      }
+      return await addShoppingItem(phoneNumber, item);
    }
 
    switch (lowerText) {

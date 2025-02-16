@@ -64,6 +64,24 @@ export const cleaningAreasRelations = relations(cleaningAreas, ({ one }) => ({
    }),
 }));
 
+export const shoppingItems = sqliteTable('shopping_items', {
+   id: integer().primaryKey({ autoIncrement: true }),
+   item: text(),
+   addedById: integer('added_by_id'),
+   homeId: integer('home_id'),
+});
+
+export const shoppingItemsRelations = relations(shoppingItems, ({ one }) => ({
+   home: one(homes, {
+      fields: [shoppingItems.homeId],
+      references: [homes.id],
+   }),
+   addedBy: one(residents, {
+      fields: [shoppingItems.addedById],
+      references: [residents.id],
+   }),
+}));
+
 export type SelectHome = typeof homes.$inferSelect;
 export type InsertHome = typeof homes.$inferInsert;
 
@@ -75,3 +93,6 @@ export type InsertReminder = typeof reminders.$inferInsert;
 
 export type SelectCleaningArea = typeof cleaningAreas.$inferSelect;
 export type InsertCleaningArea = typeof cleaningAreas.$inferInsert;
+
+export type SelectShoppingItem = typeof shoppingItems.$inferSelect;
+export type InsertShoppingItem = typeof shoppingItems.$inferInsert;
