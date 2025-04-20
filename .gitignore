@@ -173,3 +173,15 @@ dist
 
 # Finder (MacOS) folder config
 .DS_Store
+
+# production build directory
+/build
+
+# misc
+*.pem
+
+# vercel
+.vercel
+
+# typescript (next specific)
+next-env.d.ts

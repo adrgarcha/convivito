@@ -42,6 +42,6 @@ const app = new Elysia()
 
       return new Response('¡Petición POST recibida!', { status: 200 });
    })
-   .listen(3000);
+   .listen(3001);
 
 console.log(`El servidor de Convivito está ejecutándose en ${app.server?.hostname}:${app.server?.port}`);
