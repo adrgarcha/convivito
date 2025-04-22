@@ -1,5 +1,6 @@
 'use client'
 
+import { useMobile } from '@/hooks/use-mobile';
 import { ContactShadows, Environment, OrbitControls, useGLTF } from '@react-three/drei';
 import { Canvas, useFrame } from '@react-three/fiber';
 import { Suspense, useRef, useState } from 'react';
@@ -55,8 +56,10 @@ function SceneContent() {
 }
 
 export default function House() {
+  const { isMobile } = useMobile();
+
   return (
-    <Canvas shadows camera={{ position: [15, 2, -14], fov: 15 }}>
+    <Canvas shadows camera={{ position: [15, 2, -14], fov: isMobile ? 12 : 15 }}>
       <SceneContent />
     </Canvas>
   )

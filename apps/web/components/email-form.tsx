@@ -27,9 +27,9 @@ export default function EmailForm() {
 
     return (
         <form action={formAction} className="flex">
-            <Input name="email" type="email" placeholder="Escribe tu email..." className="rounded-e-none bg-white/80" />
-            <Button type="submit" disabled={pending} className="rounded-s-none hover:cursor-pointer ">
-                Únete a la Waitlist
+            <Input name="email" type="email" placeholder="Escribe tu email..." className="rounded-e-none bg-white/80 text-sm placeholder:text-sm" />
+            <Button type="submit" disabled={pending} className="rounded-s-none hover:cursor-pointer">
+                <span>Suscríbete <span className="hidden lg:inline">a la Waitlist</span></span>
             </Button>
         </form>
     )
