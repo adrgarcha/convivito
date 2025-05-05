@@ -12,7 +12,7 @@ RUN bun install --frozen-lockfile
 COPY . .
 
 # Make sure the application port is exposed
-EXPOSE 3000
+EXPOSE 3001
 
 # Set production environment
 ENV NODE_ENV=production
